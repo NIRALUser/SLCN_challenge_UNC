@@ -36,6 +36,6 @@ COPY --chown=algorithm:algorithm process.py /opt/algorithm/
 RUN pip install --no-cache-dir torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
 RUN python -m pip install --user -r requirements.txt
 RUN pip install --no-index --no-cache-dir pytorch3d -f https://dl.fbaipublicfiles.com/pytorch3d/packaging/wheels/py39_cu113_pyt1110/download.html
-
+RUN pip install requests
 # Entrypoint to your python code - executes process.py as a script
 ENTRYPOINT python -m process $0 $@

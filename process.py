@@ -183,9 +183,9 @@ class Slcn_algorithm(ClassificationAlgorithm):
             X = torch.cat(l_inputs,dim=1).to(self.device)
             X = X.type(torch.float32)                    
 
-            outputs = self.model(X)
+            outputs,_  = self.model(X)
 
-
+        # print(outputs)
         return outputs
 
 
@@ -225,22 +225,25 @@ class ShapeNet_GraphClass(nn.Module):
         efficient_net.features[0][0] = nn.Conv2d(4, 32, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
         efficient_net.classifier = Identity()
 
+        self.drop = nn.Dropout(p=0.1)
         self.TimeDistributed = TimeDistributed(efficient_net)
 
-
         self.WV = nn.Linear(1280, 512)
+
         self.Attention = SelfAttention(1280, 128)
         self.Prediction = nn.Linear(512, 1)
-
-        
+        self.Classification = nn.Linear(512,5)
  
     def forward(self, x):
- 
+        
+        x = self.drop(x)
         x = self.TimeDistributed(x)
         x_v = self.WV(x)
         x_a, w_a = self.Attention(x, x_v)
         x = self.Prediction(x_a)
-        return x
+        x_c = self.Classification(x_a)
+
+        return x,x_c
 
 class Identity(nn.Module):
     def __init__(self):
