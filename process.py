@@ -19,8 +19,9 @@ import os
 import sys
 sys.path.insert(1,'./utils')
 import pandas as pd
-import numpy as np
 import nibabel as nib
+import numpy as np
+
 import utils
 
 import math
@@ -151,6 +152,12 @@ class Slcn_algorithm(ClassificationAlgorithm):
 
         # Extract a numpy array with image data from the SimpleITK Image
         vertex_features = SimpleITK.GetArrayFromImage(input_image)
+
+        ## input image of shape (N vertices, C channels)
+        if vertex_features.shape[0]==40962:
+            pass
+        else:
+            vertex_features = np.transpose(vertex_features, (1,0))
 
 
         offset = np.zeros((self.nb_triangles,4), dtype=int) + np.array([0,1,2,3])
